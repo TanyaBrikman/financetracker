@@ -30,7 +30,8 @@ public class Transaction {
     @Column(nullable = false)
     private TransactionType type;
 
-    @JoinColumn(name = "category_type")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CategoryType categoryType;
 
     @Column(length = 255)
