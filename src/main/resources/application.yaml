@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: financetracker
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/financetracker
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      jakarta:
+        persistence:
+          validation:
+            mode: auto
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    generate-ddl: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: UTC
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
