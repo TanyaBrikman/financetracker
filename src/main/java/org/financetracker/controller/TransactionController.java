@@ -2,13 +2,22 @@ package org.financetracker.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.financetracker.dto.request.TransactionFilterRequestDTO;
 import org.financetracker.dto.request.TransactionRequestDto;
 import org.financetracker.dto.response.TransactionResponseDto;
+import org.financetracker.entity.CategoryType;
+import org.financetracker.entity.TransactionType;
 import org.financetracker.service.TransactionServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -30,6 +39,30 @@ public class TransactionController {
             @PageableDefault Pageable pageable
     ) {
         return transactionServiceImpl.getAllTransactions(pageable);
+    }
+
+    @GetMapping("/api/transactions")
+    public Page<TransactionResponseDto> findAllTransactionWithFilters(
+            @Valid TransactionFilterRequestDTO transactionFilterRequestDTO,
+            @PageableDefault Pageable pageable
+            ) {
+
+        if(transactionFilterRequestDTO.getStartDate() != null && transactionFilterRequestDTO.getEndDate() != null){
+            LocalDate start = transactionFilterRequestDTO.getStartDateAsLocalDate();
+            LocalDate end = transactionFilterRequestDTO.getEndDateAsLocalDate();
+
+            if(start.isAfter(end)) {
+                throw new IllegalArgumentException("Start date cannot be after end date");
+            }
+        }
+
+        return transactionServiceImpl.findAllTransactionWithFilters(
+                transactionFilterRequestDTO.getStartDateAsLocalDate(),
+                transactionFilterRequestDTO.getEndDateAsLocalDate(),
+                transactionFilterRequestDTO.getCategoryTypeAsEnum(),
+                transactionFilterRequestDTO.getTransactionTypeAsEnum(),
+                pageable
+        );
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package org.financetracker.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,7 @@ public class TransactionRequestDto {
     private CategoryType categoryType;
     @Size(max = 255)
     private String description;
+    @NotNull
+    @PastOrPresent(message = "Transaction date cannot be in the future")
     private LocalDate transactionDate;
 }

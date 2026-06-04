@@ -14,7 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -35,15 +36,21 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Page<TransactionResponseDto> getAllTransactions(Pageable pageable) {
-        if(pageable ==null){
+        if (pageable == null) {
             pageable = PageRequest.of(0, 10);
         }
         return transactionRepository.findAll(pageable).map(transactionMapper::toResponseDto);
     }
 
     @Override
-    public Page<TransactionResponseDto> findAllTransactionWithFilters(LocalDateTime startDate, LocalDateTime endDate, CategoryType categoryType, TransactionType type, Pageable pageable) {
-        Page<Transaction> entityPage = transactionRepository.findAllTransactionWithFilters(startDate, endDate, categoryType, type, pageable);
+    public Page<TransactionResponseDto> findAllTransactionWithFilters(
+            LocalDate startDate,
+            LocalDate endDate,
+            CategoryType category,
+            TransactionType type,
+            Pageable pageable
+    ) {
+        Page<Transaction> entityPage = transactionRepository.findAllTransactionWithFilters(startDate,endDate,category,type,pageable);
         return entityPage.map(transactionMapper::toResponseDto);
     }
 

@@ -19,6 +19,6 @@ public class TransactionResponseDto {
     private CategoryType categoryType;
     private String description;
     private LocalDate transactionDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
 }

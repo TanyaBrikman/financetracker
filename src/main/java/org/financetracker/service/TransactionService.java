@@ -6,7 +6,8 @@ import org.financetracker.entity.CategoryType;
 import org.financetracker.entity.TransactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 public interface TransactionService {
 
@@ -15,8 +16,8 @@ public interface TransactionService {
     public Page<TransactionResponseDto> getAllTransactions(Pageable pageable);
 
     public Page<TransactionResponseDto> findAllTransactionWithFilters(
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            LocalDate startDate,
+            LocalDate endDate,
             CategoryType category,
             TransactionType type,
             Pageable pageable
