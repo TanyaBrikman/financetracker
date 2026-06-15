@@ -5,58 +5,52 @@ import lombok.RequiredArgsConstructor;
 import org.financetracker.dto.request.TransactionFilterRequestDTO;
 import org.financetracker.dto.request.TransactionRequestDto;
 import org.financetracker.dto.response.TransactionResponseDto;
-import org.financetracker.entity.CategoryType;
-import org.financetracker.entity.TransactionType;
-import org.financetracker.service.TransactionServiceImpl;
+import org.financetracker.service.TransactionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private final TransactionServiceImpl transactionServiceImpl;
+    private final TransactionService transactionService;
 
     @PostMapping
     public TransactionResponseDto createTransaction(
             @RequestBody
             @Valid TransactionRequestDto transactionRequestDto
     ) {
-        return transactionServiceImpl.createTransaction(transactionRequestDto);
+        return transactionService.createTransaction(transactionRequestDto);
     }
 
     @GetMapping
     public Page<TransactionResponseDto> getAllTransactions(
             @PageableDefault Pageable pageable
     ) {
-        return transactionServiceImpl.getAllTransactions(pageable);
+        return transactionService.getAllTransactions(pageable);
     }
 
-    @GetMapping("/api/transactions")
+    @GetMapping("/filter")
     public Page<TransactionResponseDto> findAllTransactionWithFilters(
             @Valid TransactionFilterRequestDTO transactionFilterRequestDTO,
             @PageableDefault Pageable pageable
-            ) {
+    ) {
 
-        if(transactionFilterRequestDTO.getStartDate() != null && transactionFilterRequestDTO.getEndDate() != null){
+        if (transactionFilterRequestDTO.getStartDate() != null && transactionFilterRequestDTO.getEndDate() != null) {
             LocalDate start = transactionFilterRequestDTO.getStartDateAsLocalDate();
             LocalDate end = transactionFilterRequestDTO.getEndDateAsLocalDate();
 
-            if(start.isAfter(end)) {
+            if (start.isAfter(end)) {
                 throw new IllegalArgumentException("Start date cannot be after end date");
             }
         }
 
-        return transactionServiceImpl.findAllTransactionWithFilters(
+        return transactionService.findAllTransactionWithFilters(
                 transactionFilterRequestDTO.getStartDateAsLocalDate(),
                 transactionFilterRequestDTO.getEndDateAsLocalDate(),
                 transactionFilterRequestDTO.getCategoryTypeAsEnum(),
@@ -69,7 +63,7 @@ public class TransactionController {
     public TransactionResponseDto findByIdTransaction(
             @PathVariable Long id
     ) {
-        return transactionServiceImpl.findByIdTransaction(id);
+        return transactionService.findByIdTransaction(id);
     }
 
     @PutMapping("/{id}")
@@ -78,13 +72,13 @@ public class TransactionController {
             @RequestBody
             @Valid TransactionRequestDto transactionRequestDto
     ) {
-        return transactionServiceImpl.updateTransaction(id, transactionRequestDto);
+        return transactionService.updateTransaction(id, transactionRequestDto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTransaction(
             @PathVariable Long id
     ) {
-        transactionServiceImpl.deleteTransaction(id);
+        transactionService.deleteTransaction(id);
     }
 }
