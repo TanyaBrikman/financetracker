@@ -2,12 +2,13 @@ package org.financetracker.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.financetracker.dto.request.TransactionFilterRequestDTO;
 import org.financetracker.dto.request.TransactionRequestDto;
 import org.financetracker.dto.response.TransactionResponseDto;
 import org.financetracker.entity.CategoryType;
 import org.financetracker.entity.Transaction;
 import org.financetracker.entity.TransactionType;
-import org.financetracker.exception.TransactionNotFoundException;
+import org.financetracker.exception.ResourceNotFoundException;
 import org.financetracker.mapper.TransactionMapper;
 import org.financetracker.repository.TransactionRepository;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
 
+    @Transactional
     public TransactionResponseDto createTransaction(TransactionRequestDto transactionRequestDto) {
         //Преобразуем DTO -> Entity
         Transaction transaction = transactionMapper.toEntity(transactionRequestDto);
@@ -41,31 +43,39 @@ public class TransactionService {
     }
 
     public Page<TransactionResponseDto> findAllTransactionWithFilters(
-            LocalDate startDate,
-            LocalDate endDate,
-            CategoryType category,
-            TransactionType type,
+            TransactionFilterRequestDTO transactionFilterRequestDTO,
             Pageable pageable
     ) {
-        Page<Transaction> entityPage = transactionRepository.findAllTransactionWithFilters(startDate,endDate,category,type,pageable);
+        LocalDate startDate = transactionFilterRequestDTO.getStartDateAsLocalDate();
+        LocalDate endDate = transactionFilterRequestDTO.getEndDateAsLocalDate();
+        CategoryType categoryType = transactionFilterRequestDTO.getCategoryType();
+        TransactionType type = transactionFilterRequestDTO.getType();
+
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
+
+        Page<Transaction> entityPage = transactionRepository.findAllTransactionWithFilters(startDate, endDate, categoryType, type, pageable);
         return entityPage.map(transactionMapper::toResponseDto);
     }
 
     @Transactional
     public TransactionResponseDto findByIdTransaction(Long id) {
-        return transactionRepository.findById(id).map(transactionMapper::toResponseDto).orElseThrow(() -> new TransactionNotFoundException(id));
+        return transactionRepository.findById(id).map(transactionMapper::toResponseDto).orElseThrow(() -> new ResourceNotFoundException("Transaction", id));
     }
 
     @Transactional
     public TransactionResponseDto updateTransaction(Long id, TransactionRequestDto transactionRequestDto) {
-        Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
+        Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction", id));
         transactionMapper.updateEntity(transaction, transactionRequestDto);
         return transactionMapper.toResponseDto(transaction);
     }
 
     @Transactional
     public void deleteTransaction(Long id) {
-        transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
+        if (!transactionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Transaction", id);
+        }
         transactionRepository.deleteById(id);
     }
 }
