@@ -1,9 +1,6 @@
 package org.financetracker.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,15 +14,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TransactionRequestDto {
     @Positive
-    @NotNull
+    @NotNull(message = "Amount is required")
     private BigDecimal amount;
-    @NotNull
+    @NotNull(message = "Type is required")
     private TransactionType type;
-    @NotNull
+    @NotNull(message = "CategoryType is required")
     private CategoryType categoryType;
-    @Size(max = 255)
+    @Size(max = 255, message = "Description cannot exceed 255 characters")
+    @NotBlank(message ="Description is required")
     private String description;
-    @NotNull
+    @NotNull(message = "TransactionDate is required")
     @PastOrPresent(message = "Transaction date cannot be in the future")
     private LocalDate transactionDate;
 }

@@ -10,7 +10,7 @@ public class TransactionMapper {
 
     public Transaction toEntity(TransactionRequestDto transactionRequestDto) {
         if(transactionRequestDto == null) {
-            return null;
+            throw new IllegalArgumentException("Transaction");
         }
 
         Transaction transaction = new Transaction();
@@ -25,7 +25,7 @@ public class TransactionMapper {
 
     public TransactionResponseDto toResponseDto(Transaction transaction) {
         if(transaction == null) {
-            return null;
+            throw new IllegalArgumentException("Transaction");
         }
 
         TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
@@ -41,13 +41,11 @@ public class TransactionMapper {
         return transactionResponseDto;
     }
 
-    public Transaction updateEntity(Transaction entity, TransactionRequestDto transactionRequestDto) {
+    public void updateEntity(Transaction entity, TransactionRequestDto transactionRequestDto) {
         entity.setAmount(transactionRequestDto.getAmount());
         entity.setDescription(transactionRequestDto.getDescription());
         entity.setCategoryType(transactionRequestDto.getCategoryType());
         entity.setType(transactionRequestDto.getType());
         entity.setTransactionDate(transactionRequestDto.getTransactionDate());
-
-        return entity;
     }
 }

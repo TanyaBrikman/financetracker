@@ -23,7 +23,7 @@ public class ReportService {
             endDate = LocalDate.now();
         }
         if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("startDate cannot be after endDate");
+            throw new IllegalArgumentException("StartDate cannot be after endDate");
         }
         return transactionRepository.getBalance(startDate, endDate);
     }
@@ -36,14 +36,14 @@ public class ReportService {
             endDate = LocalDate.now();
         }
         if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("startDate cannot be after endDate");
+            throw new IllegalArgumentException("StartDate cannot be after endDate");
         }
         return transactionRepository.getCategoryList(startDate, endDate);
     }
 
     public List<MonthlySummaryProjection> getMonthlySummary(int year) {
         if(year < 2000 || year > LocalDate.now().getYear()) {
-            throw new IllegalArgumentException("year must be between 2000 and date now");
+            throw new IllegalArgumentException("Year must be between 2000 and date now");
         }
         return transactionRepository.getMonthlySummary(year);
     }

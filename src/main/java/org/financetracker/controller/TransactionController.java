@@ -9,9 +9,9 @@ import org.financetracker.service.TransactionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -21,64 +21,64 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    public TransactionResponseDto createTransaction(
+    public ResponseEntity<TransactionResponseDto> createTransaction(
             @RequestBody
             @Valid TransactionRequestDto transactionRequestDto
     ) {
-        return transactionService.createTransaction(transactionRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(transactionService.createTransaction(transactionRequestDto));
     }
 
     @GetMapping
-    public Page<TransactionResponseDto> getAllTransactions(
+    public ResponseEntity<Page<TransactionResponseDto>> getAllTransactions(
             @PageableDefault Pageable pageable
     ) {
-        return transactionService.getAllTransactions(pageable);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(transactionService.getAllTransactions(pageable));
     }
 
     @GetMapping("/filter")
-    public Page<TransactionResponseDto> findAllTransactionWithFilters(
+    public ResponseEntity<Page<TransactionResponseDto>> findAllTransactionWithFilters(
             @Valid TransactionFilterRequestDTO transactionFilterRequestDTO,
             @PageableDefault Pageable pageable
     ) {
-
-        if (transactionFilterRequestDTO.getStartDate() != null && transactionFilterRequestDTO.getEndDate() != null) {
-            LocalDate start = transactionFilterRequestDTO.getStartDateAsLocalDate();
-            LocalDate end = transactionFilterRequestDTO.getEndDateAsLocalDate();
-
-            if (start.isAfter(end)) {
-                throw new IllegalArgumentException("Start date cannot be after end date");
-            }
-        }
-
-        return transactionService.findAllTransactionWithFilters(
-                transactionFilterRequestDTO.getStartDateAsLocalDate(),
-                transactionFilterRequestDTO.getEndDateAsLocalDate(),
-                transactionFilterRequestDTO.getCategoryTypeAsEnum(),
-                transactionFilterRequestDTO.getTransactionTypeAsEnum(),
-                pageable
-        );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(transactionService.findAllTransactionWithFilters(
+                        transactionFilterRequestDTO,
+                        pageable
+                ));
     }
 
     @GetMapping("/{id}")
-    public TransactionResponseDto findByIdTransaction(
+    public ResponseEntity<TransactionResponseDto> findByIdTransaction(
             @PathVariable Long id
     ) {
-        return transactionService.findByIdTransaction(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(transactionService.findByIdTransaction(id));
     }
 
     @PutMapping("/{id}")
-    public TransactionResponseDto updateTransaction(
+    public ResponseEntity<TransactionResponseDto> updateTransaction(
             @PathVariable Long id,
             @RequestBody
             @Valid TransactionRequestDto transactionRequestDto
     ) {
-        return transactionService.updateTransaction(id, transactionRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(transactionService.updateTransaction(id, transactionRequestDto));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTransaction(
+    public ResponseEntity<Void> deleteTransaction(
             @PathVariable Long id
     ) {
         transactionService.deleteTransaction(id);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

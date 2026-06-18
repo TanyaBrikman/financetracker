@@ -1,5 +1,6 @@
 package org.financetracker.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,30 +17,10 @@ public class TransactionFilterRequestDTO {
     private String startDate;
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
     private String endDate;
-    private String categoryType;
-    private String type;
-
-    public CategoryType getCategoryTypeAsEnum() {
-        if(categoryType == null || categoryType.isBlank()) {
-            return null;
-        }
-        try {
-            return CategoryType.valueOf(categoryType.toUpperCase());
-        }catch (Exception e) {
-            throw new IllegalArgumentException("Invalid category type: " + categoryType);
-        }
-    }
-
-    public TransactionType getTransactionTypeAsEnum() {
-        if(type == null || type.isBlank()) {
-            return null;
-        }
-        try {
-            return TransactionType.valueOf(type.toUpperCase());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid transaction type: " + type);
-        }
-    }
+    @NotNull(message = "CategoryType is required")
+    private CategoryType categoryType;
+    @NotNull(message = "Type is required")
+    private TransactionType type;
 
     public LocalDate getStartDateAsLocalDate() {
         return startDate != null ? LocalDate.parse(startDate) : null;
