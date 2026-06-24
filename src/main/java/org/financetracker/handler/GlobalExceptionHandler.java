@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private String getPath(WebRequest request) {
-        String path = "";
+        String path;
         try {
             String description = request.getDescription(false);
             path = description.replace("\\s", "");

@@ -2,6 +2,7 @@ package org.financetracker.dto.request;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.financetracker.entity.CategoryType;
@@ -9,6 +10,7 @@ import org.financetracker.entity.TransactionType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
