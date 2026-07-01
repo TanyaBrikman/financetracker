@@ -40,25 +40,25 @@ public class TransactionController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<TransactionResponseDto>> findAllTransactionWithFilters(
+    public ResponseEntity<Page<TransactionResponseDto>> getAllTransactionWithFilters(
             @Valid TransactionFilterRequestDTO transactionFilterRequestDTO,
             @PageableDefault Pageable pageable
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(transactionService.findAllTransactionWithFilters(
+                .body(transactionService.getAllTransactionWithFilters(
                         transactionFilterRequestDTO,
                         pageable
                 ));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionResponseDto> findByIdTransaction(
+    public ResponseEntity<TransactionResponseDto> getTransactionById(
             @PathVariable Long id
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(transactionService.findByIdTransaction(id));
+                .body(transactionService.getTransactionById(id));
     }
 
     @PutMapping("/{id}")

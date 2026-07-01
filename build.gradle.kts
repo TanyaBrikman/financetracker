@@ -23,7 +23,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
-    implementation ("org.springframework.boot:spring-boot-starter-security")
     implementation("org.liquibase:liquibase-core:4.33.0")
 
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -42,7 +41,6 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<Test> {

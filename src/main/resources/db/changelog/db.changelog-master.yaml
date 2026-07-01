@@ -2,4 +2,10 @@ databaseChangeLog:
   - include:
       file: db/changelog/v1/2026-05-30_16-00_create-transaction-table.xml
   - include:
-      file: db/changelog/v1/2026-06-03_13-00_create-transaction-table.xml
+      file: db/changelog/v1/2026-06-03_13-00_update-transaction-table.xml
+  - include:
+      file: db/changelog/v1/2026-06-29_12-00_create-users-table.xml
+  - include:
+      file: db/changelog/v1/2026-06-29_13-00_update-transaction-table.xml
+  - include:
+      file: db/changelog/v1/2026-06-29_13-30_update-transactions-table.xml

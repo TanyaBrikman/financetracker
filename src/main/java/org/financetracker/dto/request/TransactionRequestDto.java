@@ -28,4 +28,6 @@ public class TransactionRequestDto {
     @NotNull(message = "TransactionDate is required")
     @PastOrPresent(message = "Transaction date cannot be in the future")
     private LocalDate transactionDate;
+    @NotNull(message = "User id is required")
+    private Long userId;
 }

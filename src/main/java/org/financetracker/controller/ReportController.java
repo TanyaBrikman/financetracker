@@ -2,8 +2,8 @@ package org.financetracker.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.financetracker.projection.BalanceResponseProjection;
-import org.financetracker.projection.MonthlySummaryProjection;
 import org.financetracker.projection.CategoryExpenseProjection;
+import org.financetracker.projection.MonthlySummaryProjection;
 import org.financetracker.service.ReportService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,23 +22,27 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/balance")
-    public ResponseEntity<BalanceResponseProjection> getBalance(@RequestParam(required = false) LocalDate startDate,
-                                     @RequestParam(required = false) LocalDate endDate) {
-        return ResponseEntity.status(HttpStatus.OK).body(reportService.getBalance(startDate, endDate));
+    public ResponseEntity<BalanceResponseProjection> getBalance(
+            @RequestParam Long userId,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate) {
+        return ResponseEntity.status(HttpStatus.OK).body(reportService.getBalance(userId, startDate, endDate));
     }
 
     @GetMapping("/expenses-by-category")
-    public  ResponseEntity<List<CategoryExpenseProjection>> getExpensesByCategoryType(
+    public ResponseEntity<List<CategoryExpenseProjection>> getExpensesByCategoryType(
+            @RequestParam Long userId,
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(reportService.getExpensesByCategoryType(startDate, endDate));
+        return ResponseEntity.status(HttpStatus.OK).body(reportService.getExpensesByCategoryType(userId, startDate, endDate));
     }
 
     @GetMapping("/monthly-summary")
     public ResponseEntity<List<MonthlySummaryProjection>> getMonthlySummary(
+            @RequestParam Long userId,
             @RequestParam int year
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(reportService.getMonthlySummary(year));
+        return ResponseEntity.status(HttpStatus.OK).body(reportService.getMonthlySummary(userId, year));
     }
 }

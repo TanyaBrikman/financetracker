@@ -13,7 +13,7 @@ spring:
           validation:
             mode: auto
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     open-in-view: false
     generate-ddl: true
   liquibase:
@@ -27,3 +27,6 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+  security:
+    basic:
+      enabled: false
