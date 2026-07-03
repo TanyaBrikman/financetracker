@@ -20,6 +20,7 @@ public class TransactionResponseDto {
     private CategoryType categoryType;
     private String description;
     private LocalDate transactionDate;
+    private Long userId;
     private LocalDate createdAt;
     private LocalDate updatedAt;
 }

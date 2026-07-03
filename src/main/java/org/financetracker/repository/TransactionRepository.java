@@ -1,19 +1,21 @@
 package org.financetracker.repository;
 
-import org.financetracker.projection.BalanceResponseProjection;
-import org.financetracker.projection.MonthlySummaryProjection;
 import org.financetracker.entity.CategoryType;
 import org.financetracker.entity.Transaction;
 import org.financetracker.entity.TransactionType;
+import org.financetracker.projection.BalanceResponseProjection;
 import org.financetracker.projection.CategoryExpenseProjection;
+import org.financetracker.projection.MonthlySummaryProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     @Query("""
@@ -23,6 +25,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                         (:endDate IS NULL OR t.transactionDate <= :endDate) AND
                         (:categoryType IS NULL OR t.categoryType = :categoryType) AND
                         (:type IS NULL OR t.type = :type)
+            
             """)
     Page<Transaction> findAllTransactionWithFilters(
             @Param("startDate") LocalDate startDate,
@@ -39,11 +42,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                          COALESCE(SUM(CASE WHEN t.type = 'INCOME' THEN t.amount ELSE 0 END), 0) -
                          COALESCE(SUM(CASE WHEN t.type = 'EXPENSE' THEN t.amount ELSE 0 END), 0) as balance
                          FROM Transaction t
-                         WHERE t.transactionDate >= :startDate AND
-                         t.transactionDate <= :endDate
+                         WHERE
+                                     t.user.id = :userId AND
+                                     t.transactionDate >= :startDate AND
+                                     t.transactionDate <= :endDate
             """)
-    BalanceResponseProjection getBalance(@Param("startDate") LocalDate startDate,
-                                         @Param("endDate") LocalDate endDate
+    BalanceResponseProjection getBalance(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Query("""
@@ -53,13 +60,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                         COUNT(t.id) AS transactionCount,
                         ROUND(COALESCE(SUM(t.amount) * 100.0 / SUM(SUM(t.amount)) OVER(), 0), 1) as percentage
             FROM Transaction t
-            WHERE t.type = 'EXPENSE'  AND
-            (t.transactionDate >= :startDate) AND
-            (t.transactionDate <= :endDate)
+            WHERE
+                        t.user.id = :userId AND
+                        t.type = 'EXPENSE'  AND
+                        (t.transactionDate >= :startDate) AND
+                        (t.transactionDate <= :endDate)
             GROUP BY t.categoryType
             ORDER BY SUM(t.amount) DESC
             """)
     List<CategoryExpenseProjection> getCategoryList(
+            @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
@@ -88,11 +98,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                   COALESCE(SUM(CASE WHEN t.type = 'INCOME' THEN t.amount ELSE 0 END), 0) -
                   COALESCE(SUM(CASE WHEN t.type = 'EXPENSE' THEN t.amount ELSE 0 END), 0) as balance
             FROM Transaction t
-            WHERE EXTRACT(YEAR FROM t.transactionDate) = :year
+            WHERE
+                        t.user.id = :userId AND
+                        EXTRACT(YEAR FROM t.transactionDate) = :year
             GROUP BY EXTRACT(YEAR FROM t.transactionDate), EXTRACT(MONTH FROM t.transactionDate)
             ORDER BY EXTRACT(YEAR FROM t.transactionDate) ASC
             """)
     List<MonthlySummaryProjection> getMonthlySummary(
+            @Param("userId") Long userId,
             @Param("year") int year
     );
 }

@@ -8,14 +8,15 @@ import org.financetracker.dto.response.TransactionResponseDto;
 import org.financetracker.entity.CategoryType;
 import org.financetracker.entity.Transaction;
 import org.financetracker.entity.TransactionType;
+import org.financetracker.entity.User;
 import org.financetracker.exception.ResourceNotFoundException;
 import org.financetracker.mapper.TransactionMapper;
 import org.financetracker.repository.TransactionRepository;
+import org.financetracker.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 
 @Service
@@ -24,11 +25,13 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
+    private final UserRepository userRepository;
 
     @Transactional
     public TransactionResponseDto createTransaction(TransactionRequestDto transactionRequestDto) {
+       User user = userRepository.findById(transactionRequestDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("Transaction", transactionRequestDto.getUserId()));
         //Преобразуем DTO -> Entity
-        Transaction transaction = transactionMapper.toEntity(transactionRequestDto);
+        Transaction transaction = transactionMapper.toEntity(transactionRequestDto,user);
         //Сохраняем
         Transaction savedTransaction = transactionRepository.save(transaction);
         //Преобразуем обратно Entity -> DTO
@@ -42,7 +45,7 @@ public class TransactionService {
         return transactionRepository.findAll(pageable).map(transactionMapper::toResponseDto);
     }
 
-    public Page<TransactionResponseDto> findAllTransactionWithFilters(
+    public Page<TransactionResponseDto> getAllTransactionWithFilters(
             TransactionFilterRequestDTO transactionFilterRequestDTO,
             Pageable pageable
     ) {
@@ -60,7 +63,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionResponseDto findByIdTransaction(Long id) {
+    public TransactionResponseDto getTransactionById(Long id) {
         return transactionRepository.findById(id).map(transactionMapper::toResponseDto).orElseThrow(() -> new ResourceNotFoundException("Transaction", id));
     }
 
