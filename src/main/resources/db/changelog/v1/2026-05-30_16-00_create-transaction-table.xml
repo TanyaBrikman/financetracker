@@ -10,27 +10,36 @@
                         incrementBy="1"
         />
         <createTable tableName="transaction">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id"
+                    type="bigint"
+                    autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="amount" type="decimal">
+            <column name="amount"
+                    type="decimal">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="varchar">
+            <column name="type"
+                    type="varchar">
                 <constraints nullable="false"/>
             </column>
-            <column name="category_type" type="varchar">
+            <column name="category_type"
+                    type="varchar">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar">
+            <column name="description"
+                    type="varchar">
             </column>
-            <column name="transaction_date" type="date">
+            <column name="transaction_date"
+                    type="date">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="timestamp">
+            <column name="created_at"
+                    type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="datetime">
+            <column name="updated_at"
+                    type="datetime">
             </column>
         </createTable>
     </changeSet>

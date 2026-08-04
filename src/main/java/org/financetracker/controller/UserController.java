@@ -32,15 +32,13 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserResponseDto>> getAllUser(@PageableDefault Pageable pageable) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userService.getAllUsers(pageable));
+                .ok(userService.getAllUsers(pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userService.getUserById(id));
+                .ok(userService.getUserById(id));
 
     }
 

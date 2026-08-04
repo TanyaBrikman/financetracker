@@ -8,16 +8,15 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "users")
 @Entity
 public class User {
 
-    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
     @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "user_name", nullable = false)

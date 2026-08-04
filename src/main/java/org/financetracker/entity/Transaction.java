@@ -24,6 +24,8 @@ public class Transaction {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

@@ -7,6 +7,7 @@ spring:
     username: postgres
     password: postgres
   jpa:
+    show-sql: true
     properties:
       jakarta:
         persistence:
@@ -16,6 +17,8 @@ spring:
       ddl-auto: none
     open-in-view: false
     generate-ddl: true
+  mvc:
+    static-path-pattern: /static/**
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
@@ -27,6 +30,20 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
-  security:
-    basic:
-      enabled: false
+security:
+  basic:
+    enabled: false
+logging:
+  level:
+    org.financetracker: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.transaction: INFO
+    org.springframework.security: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %level - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+    path: logs/

@@ -2,7 +2,7 @@ package org.financetracker.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.financetracker.dto.request.TransactionFilterRequestDTO;
+import org.financetracker.dto.request.TransactionFilterRequestDto;
 import org.financetracker.dto.request.TransactionRequestDto;
 import org.financetracker.dto.response.TransactionResponseDto;
 import org.financetracker.service.TransactionService;
@@ -35,18 +35,17 @@ public class TransactionController {
             @PageableDefault Pageable pageable
     ) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(transactionService.getAllTransactions(pageable));
+                .ok(transactionService.getAllTransactions(pageable));
     }
 
-    @GetMapping("/filter")
+    @GetMapping("/filters")
     public ResponseEntity<Page<TransactionResponseDto>> getAllTransactionWithFilters(
-            @Valid TransactionFilterRequestDTO transactionFilterRequestDTO,
+
+            TransactionFilterRequestDto transactionFilterRequestDTO,
             @PageableDefault Pageable pageable
     ) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(transactionService.getAllTransactionWithFilters(
+                .ok(transactionService.getAllTransactionWithFilters(
                         transactionFilterRequestDTO,
                         pageable
                 ));
@@ -57,26 +56,24 @@ public class TransactionController {
             @PathVariable Long id
     ) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(transactionService.getTransactionById(id));
+                .ok(transactionService.getTransactionById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionResponseDto> updateTransaction(
+    public ResponseEntity<TransactionResponseDto> updateTransactionById(
             @PathVariable Long id,
             @RequestBody
             @Valid TransactionRequestDto transactionRequestDto
     ) {
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(transactionService.updateTransaction(id, transactionRequestDto));
+                .ok(transactionService.updateTransactionById(id, transactionRequestDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(
+    public ResponseEntity<Void> deleteTransactionById(
             @PathVariable Long id
     ) {
-        transactionService.deleteTransaction(id);
+        transactionService.deleteTransactionById(id);
         return ResponseEntity
                 .noContent()
                 .build();

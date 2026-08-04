@@ -11,7 +11,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorResponseDTO {
+public class ErrorResponseDto {
     LocalDate date;
     int status;
     String error;

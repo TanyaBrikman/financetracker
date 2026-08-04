@@ -32,12 +32,12 @@ public class TransactionControllerIntegrationTest {
     @Test
     void getTransactionById_ShouldReturn200_WhenTransactionExists() throws Exception {
 
-        Long transactionId = 53L;
+        Long transactionId = 1L;
 
         mockMvc.perform(get("/api/transactions/{id}", transactionId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(transactionId))
-                .andExpect(jsonPath("$.amount").value(200000))
-                .andExpect(jsonPath("$.description").value("Покупка дивана"));
+                .andExpect(jsonPath("$.amount").value(5000))
+                .andExpect(jsonPath("$.description").value("Ужин в ресторане"));
     }
 }

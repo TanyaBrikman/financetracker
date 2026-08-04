@@ -1,6 +1,6 @@
 package org.financetracker.handler;
 
-import org.financetracker.dto.ErrorResponseDTO;
+import org.financetracker.dto.ErrorResponseDto;
 import org.financetracker.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +27,9 @@ public class GlobalExceptionHandler {
     }
     //404
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleNotFound(ResourceNotFoundException exception, WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleNotFound(ResourceNotFoundException exception, WebRequest request) {
 
-        ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
+        ErrorResponseDto errorResponse = ErrorResponseDto.builder()
                 .date(LocalDate.now())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error(HttpStatus.NOT_FOUND.getReasonPhrase())
@@ -40,13 +40,13 @@ public class GlobalExceptionHandler {
     }
     //400
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
 
     Map<String, String> validationErrors = exception.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(
             error -> error.getField(),              // ключ
             error -> error.getDefaultMessage()));              //значение(сообщение)
 
-        ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
+        ErrorResponseDto errorResponse = ErrorResponseDto.builder()
                 .date(LocalDate.now())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -58,9 +58,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleException(Exception exception, WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleException(Exception exception, WebRequest request) {
 
-        ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
+        ErrorResponseDto errorResponse = ErrorResponseDto.builder()
                 .date(LocalDate.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Internal Server Error")

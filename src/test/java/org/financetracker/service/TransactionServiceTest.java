@@ -124,7 +124,7 @@ public class TransactionServiceTest {
 
         when(transactionMapper.toResponseDto(transaction)).thenReturn(updateResponse);
 
-        TransactionResponseDto result = transactionService.updateTransaction(transactionId, updateRequest);
+        TransactionResponseDto result = transactionService.updateTransactionById(transactionId, updateRequest);
 
         assertNotNull(result);
 
@@ -140,7 +140,7 @@ public class TransactionServiceTest {
 
         when(transactionRepository.existsById(transactionId)).thenReturn(true);
 
-        transactionService.deleteTransaction(transactionId);
+        transactionService.deleteTransactionById(transactionId);
 
         verify(transactionRepository, times(1)).existsById(transactionId);
 
