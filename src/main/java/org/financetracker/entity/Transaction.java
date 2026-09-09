@@ -24,12 +24,6 @@ public class Transaction {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @JoinColumn(nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
-
     @Column(nullable = false)
     private BigDecimal amount;
 
@@ -53,4 +47,10 @@ public class Transaction {
 
     @LastModifiedDate
     private LocalDate updatedAt;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private User user;
 }

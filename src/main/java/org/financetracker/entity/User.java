@@ -2,6 +2,8 @@ package org.financetracker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -28,4 +30,9 @@ public class User {
     @Column(unique = true, nullable = false)
     @EqualsAndHashCode.Include
     private String email;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Transaction> transactions = new ArrayList<>();
 }
