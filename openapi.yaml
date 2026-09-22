@@ -1,0 +1,343 @@
+openapi: 3.0.0
+
+info:
+  title: financetracker API
+  description: Финансовый трекер для управления доходами и расходами пользователей
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/v1
+    description: Local server
+
+tags:
+  - name: Управление транзакциями
+  - name: Управление пользователями
+  - name: Управление отчетами
+
+paths:
+  /api/transactions:
+    post:
+      tags:
+        - Управление транзакциями
+      summary: Создать новую транзакцию
+      operationId: createTransaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequestDto'
+      responses:
+        '201':
+          description: Транзакция успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponseDto'
+        '400':
+          description: Невалидные данные запроса
+        '404':
+          description: Пользователь не найден
+        '500':
+          description: Внутренняя ошибка сервера
+
+    get:
+      tags:
+        - Управление транзакциями
+      summary: Получить все транзакции (с пагинацией)
+      operationId: getAllTransactions
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionResponseDto'
+        '400':
+          description: Невалидные данные запроса
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /api/transactions/filters:
+    get:
+      tags:
+        - Управление транзакциями
+      summary: Получить все транзакции по фильтру (с пагинацией)
+      operationId: getAllTransactionWithFilters
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          example: '2026-01-01'
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          example: '2026-01-01'
+        - name: categoryType
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/categoryType'
+        - name: type
+          in: query
+          required: false
+          schema:
+             $ref: '#/components/schemas/type'
+          example: EXPENSE
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionResponseDto'
+        '400':
+          description: Невалидные данные запроса
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /api/transactions/{id}:
+    get:
+      tags:
+        - Управление транзакциями
+      summary: Получить транзакцию по ID
+      operationId: getTransactionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequestDto'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponseDto'
+        '400':
+          description: Невалидные данные запроса
+        '500':
+          description: Внутренняя ошибка сервера
+
+    put:
+      tags:
+        - Управление транзакциями
+      summary: Обновить транзакцию по ID
+      operationId: updateTransactionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: ID транзакции для обновления
+          example: 1
+      requestBody:
+          required: true
+          description: Данные для обновления транзакции
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRequestDto'
+      responses:
+          '200':
+            description: Транзакция успешно обновлена
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/TransactionResponseDto'  # ← Одна транзакция!
+
+          '400':
+            description: Невалидные данные запроса
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Неверный формат данных"
+
+          '404':
+            description: Транзакция с указанным ID не найдена
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Транзакция с ID 1 не найдена"
+
+          '500':
+            description: Внутренняя ошибка сервера
+
+    delete:
+      tags:
+        - Управление транзакциями
+      summary: Удалить транзакцию по ID
+      operationId: deleteTransactionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Транзакция успешно удалена
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionResponseDto'
+        '400':
+          description: Невалидные данные запроса
+        '500':
+          description: Внутренняя ошибка сервера
+
+components:
+  schemas:
+    categoryType:
+      type: string
+      enum: [ FOOD,
+              TRANSPORT,
+              SHOPPING,
+              ENTERTAINMENT,
+              BILLS,
+              HEALTH,
+              SALARY,
+              OTHER ]
+      example: FOOD
+    type:
+      type: string
+      enum: [ INCOME, EXPENSE ]
+      example: INCOME
+    TransactionRequestDto:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 3000.00
+        description:
+          type: string
+          maximum: 255
+          example: Ресторан
+        categoryType:
+          $ref: '#/components/schemas/categoryType'
+        type:
+          $ref: '#/components/schemas/type'
+        transactionDate:
+          type: string
+          format: data
+          example: 2026-01-01
+        userId:
+          type: integer
+          example: 1
+    TransactionResponseDto:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        amount:
+          type: number
+          example: 3000.00
+        description:
+          type: string
+          example: Ресторан
+        categoryType:
+          $ref: '#/components/schemas/categoryType'
+        type:
+          $ref: '#/components/schemas/type'
+        transactionDate:
+          type: string
+          format: date
+          example: 2026-05-10
+        userId:
+          type: integer
+          example: 1
+        createAt:
+          type: string
+          format: data
+          example: 2026-05-10
+        updateAt:
+          type: string
+          format: data
+          example: 2026-05-10
+    TransactionFilterRequestDto:
+      type: object
+      properties:
+        startDate:
+          type: string
+          pattern: '\\d{4}-\\d{2}-\\d{2}'
+          example: 2026-05-10
+        endDate:
+          type: string
+          pattern: '\\d{4}-\\d{2}-\\d{2}'
+          example: 2026-05-10
+        categoryType:
+          $ref: '#/components/schemas/categoryType'
+        type:
+          $ref: '#/components/schemas/type'
+        userId:
+          type: integer
+          example: 1

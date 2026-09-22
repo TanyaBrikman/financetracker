@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2026-06-29_13-30" author="Tanya Brikman">
+        <createSequence sequenceName="transactions_seq"
+                        startValue="1"
+                        incrementBy="1"
+        />
+        <addColumn tableName="transactions">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="transactions"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_transactions_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+</databaseChangeLog>

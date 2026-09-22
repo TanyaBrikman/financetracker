@@ -1,0 +1,7 @@
+.git
+.gitignore
+build/
+!build/libs/
+logs/
+*.log
+README.md

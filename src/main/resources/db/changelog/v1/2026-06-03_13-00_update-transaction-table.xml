@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2026-06-03_13-00" author="Tanya Brikman">
+        <createSequence sequenceName="transaction_seq"
+                        startValue="1"
+                        incrementBy="1"/>
+        <modifyDataType tableName="transaction"
+                        columnName="created_at"
+                        newDataType="date"/>
+        <modifyDataType tableName="transaction"
+                        columnName="updated_at"
+                        newDataType="date"/>
+    </changeSet>
+</databaseChangeLog>

@@ -35,3 +35,26 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Gradle wrapper
+gradlew
+gradlew.bat
+gradle/wrapper/
+wrapper/
+
+# Gradle caches
+.gradle/
+caches/
+daemon/
+native/
+
+# IDE
+.idea/
+*.iml
+
+# Temp files
+.tmp/
+*.log
+
+# System
+.gitattributes
