@@ -109,16 +109,16 @@ Swagger UI доступен по адресу: `http://localhost:8080/swagger-ui
 | GET    | /api/transactions         | Получить все транзакции         |
 | GET    | /api/transactions/{id}    | Получить транзакцию по id       |
 | GET    | /api/transactions/filters | Получить транзакции по фильтрам |
-| PUT    | /api/transactions/{id}    | Обновить транзакцию             |
+| PUT    | /api/transactions/{id}    | Обновить транзакцию по id       |
 | DELETE | /api/transactions/{id}    | Удалить транзакцию по id        |
 
 ### Отчёты
 
-| Метод | URL                              | Описание                    |
-|-------|----------------------------------|-----------------------------|
-| GET   | /api/report/balance              | Получить баланс             |
-| GET   | /api/report/expenses-by-category | Получить всех пользователей |
-| GET   | /api/report/monthly-summary      | Получить пользователя по id |
+| Метод | URL                              | Описание                          |
+|-------|----------------------------------|-----------------------------------|
+| GET   | /api/report/balance              | Получить баланс                   |
+| GET   | /api/report/expenses-by-category | Получить расходы по категориям    |
+| GET   | /api/report/monthly-summary      | Получить месячную сводку расходов |
 
 ### Примеры запросов:
 
