@@ -6,7 +6,6 @@ import org.financetracker.entity.Transaction;
 import org.financetracker.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 
 @Component
 public class TransactionMapper {
@@ -27,8 +26,6 @@ public class TransactionMapper {
                 .type(transactionRequestDto.getType())
                 .transactionDate(transactionRequestDto.getTransactionDate())
                 .user(user)
-                .createdAt(LocalDate.now())
-                .updatedAt(LocalDate.now())
                 .build();
     }
 
@@ -56,6 +53,5 @@ public class TransactionMapper {
         entity.setCategoryType(transactionRequestDto.getCategoryType());
         entity.setType(transactionRequestDto.getType());
         entity.setTransactionDate(transactionRequestDto.getTransactionDate());
-        entity.setUpdatedAt(LocalDate.now());
     }
 }

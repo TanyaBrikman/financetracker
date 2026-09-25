@@ -116,9 +116,10 @@ public class TransactionService {
                     return new ResourceNotFoundException("Transaction", id);
                 });
         transactionMapper.updateEntity(transaction, transactionRequestDto);
+        Transaction saved = transactionRepository.saveAndFlush(transaction);
         log.debug("Transaction with id: {} updated successfully", id);
 
-        return transactionMapper.toResponseDto(transaction);
+        return transactionMapper.toResponseDto(saved);
     }
 
     @Transactional
