@@ -21,6 +21,7 @@ public class TransactionFilterRequestDto {
     private String endDate;
     private CategoryType categoryType;
     private TransactionType type;
+    @NotNull(message = "User id is required")
     private Long userId;
 
     public LocalDate getStartDateAsLocalDate() {

@@ -6,7 +6,6 @@ import org.financetracker.entity.Transaction;
 import org.financetracker.entity.User;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class TransactionMapper {
 

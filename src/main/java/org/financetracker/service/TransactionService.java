@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.financetracker.dto.request.TransactionFilterRequestDto;
 import org.financetracker.dto.request.TransactionRequestDto;
+import org.financetracker.dto.request.TransactionRequestUserIdDto;
 import org.financetracker.dto.response.TransactionResponseDto;
 import org.financetracker.entity.CategoryType;
 import org.financetracker.entity.Transaction;
@@ -14,10 +15,10 @@ import org.financetracker.mapper.TransactionMapper;
 import org.financetracker.repository.TransactionRepository;
 import org.financetracker.repository.UserRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 
 @Service
@@ -52,44 +53,50 @@ public class TransactionService {
     }
 
     @Transactional(readOnly = true)
-    public Page<TransactionResponseDto> getAllTransactions(Pageable pageable) {
-        log.info("Get all transactions");
-        if (pageable == null) {
-            pageable = PageRequest.of(0, 10);
-        }
+    public Page<TransactionResponseDto> getAllTransactions(TransactionRequestUserIdDto transactionRequestUserIdDto, Pageable pageable) {
 
-        log.debug("Page request: page={}, size={}",
-                pageable.getPageNumber(),
-                pageable.getPageSize()
-        );
+        Long userId = transactionRequestUserIdDto.getUserId();
 
-        Page<TransactionResponseDto> response = transactionRepository.findAll(pageable).map(transactionMapper::toResponseDto);
-        log.debug("Found {} transactions out of {}", response.getNumberOfElements(), response.getTotalElements());
+        log.info("Get all transactions: userId={}, page={}, size={}",
+                userId, pageable.getPageNumber(), pageable.getPageSize());
 
-        return response;
+        Page<Transaction> entityPage = transactionRepository.findAllTransactions(userId, pageable);
+        logPage(entityPage);
+        return entityPage.map(transactionMapper::toResponseDto);
     }
 
     @Transactional(readOnly = true)
     public Page<TransactionResponseDto> getAllTransactionWithFilters(
-            TransactionFilterRequestDto transactionFilterRequestDTO,
+            TransactionFilterRequestDto transactionFilterRequestDto,
             Pageable pageable
     ) {
-        log.info("Get all transactions with filters");
-        LocalDate startDate = transactionFilterRequestDTO.getStartDateAsLocalDate();
-        LocalDate endDate = transactionFilterRequestDTO.getEndDateAsLocalDate();
-        CategoryType categoryType = transactionFilterRequestDTO.getCategoryType();
-        TransactionType type = transactionFilterRequestDTO.getType();
+        Long userId = transactionFilterRequestDto.getUserId();
+        LocalDate startDate = transactionFilterRequestDto.getStartDateAsLocalDate();
+        LocalDate endDate = transactionFilterRequestDto.getEndDateAsLocalDate();
+        CategoryType categoryType = transactionFilterRequestDto.getCategoryType();
+        TransactionType type = transactionFilterRequestDto.getType();
+
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
-
-            log.warn("Start date {} is after end date {}", startDate, endDate);
-
+            log.debug("Start date {} is after end date {}", startDate, endDate);
             throw new IllegalArgumentException(String.format("Start date '%s' cannot be after end date '%s'", startDate, endDate));
         }
 
-        log.debug("Start date: {}", startDate);
-        log.debug("End date: {}", endDate);
-        Page<Transaction> entityPage = transactionRepository.findAllTransactionWithFilters(startDate, endDate, categoryType, type, pageable);
-        log.debug("Found {} transactions with filters", entityPage.getNumberOfElements());
+        log.info("Get transactions with filters: userId={}, startDate={}, endDate={}, categoryType={}, type={}, page={}, size={}",
+                userId,
+                startDate,
+                endDate,
+                categoryType,
+                type,
+                pageable.getPageNumber(),
+                pageable.getPageSize());
+        Page<Transaction> entityPage = transactionRepository.findAllTransactionWithFilters(
+                userId,
+                startDate,
+                endDate,
+                categoryType,
+                type,
+                pageable);
+        logPage(entityPage);
         return entityPage.map(transactionMapper::toResponseDto);
     }
 
@@ -118,7 +125,6 @@ public class TransactionService {
         transactionMapper.updateEntity(transaction, transactionRequestDto);
         Transaction saved = transactionRepository.saveAndFlush(transaction);
         log.debug("Transaction with id: {} updated successfully", id);
-
         return transactionMapper.toResponseDto(saved);
     }
 
@@ -131,5 +137,13 @@ public class TransactionService {
         }
         transactionRepository.deleteById(id);
         log.info("Transaction with id: {} deleted successfully", id);
+    }
+
+    private void logPage(Page<?> page) {
+        log.debug("Page {} of {} returned {} items (total={})",
+                page.getNumber() + 1,
+                page.getTotalPages(),
+                page.getNumberOfElements(),
+                page.getTotalElements());
     }
 }

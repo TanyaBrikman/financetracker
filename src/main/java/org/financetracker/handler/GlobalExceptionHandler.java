@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         String path;
         try {
             String description = request.getDescription(false);
-            path = description.replace("\\s", "");
+            path = description.replace("uri=", "");
         } catch (Exception e) {
             throw new ResourceNotFoundException(e.getMessage());
         }

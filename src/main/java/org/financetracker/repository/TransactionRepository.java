@@ -23,6 +23,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("""
             SELECT
                         t FROM Transaction t WHERE
+                        (:userId IS NULL OR t.user.id = :userId)
+            """)
+    Page<Transaction> findAllTransactions(
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
+
+    @EntityGraph(attributePaths = "user")
+    @Query("""
+            SELECT
+                        t FROM Transaction t WHERE
                         (:startDate IS NULL OR t.transactionDate >= :startDate) AND
                         (:endDate IS NULL OR t.transactionDate <= :endDate) AND
                         (:categoryType IS NULL OR t.categoryType = :categoryType) AND
@@ -30,6 +42,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             
             """)
     Page<Transaction> findAllTransactionWithFilters(
+            @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
             @Param("categoryType") CategoryType categoryType,

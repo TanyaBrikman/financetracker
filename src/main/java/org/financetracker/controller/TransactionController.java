@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.financetracker.dto.request.TransactionFilterRequestDto;
 import org.financetracker.dto.request.TransactionRequestDto;
+import org.financetracker.dto.request.TransactionRequestUserIdDto;
 import org.financetracker.dto.response.TransactionResponseDto;
 import org.financetracker.service.TransactionService;
 import org.springframework.data.domain.Page;
@@ -30,18 +31,19 @@ public class TransactionController {
                 .body(transactionService.createTransaction(transactionRequestDto));
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<Page<TransactionResponseDto>> getAllTransactions(
+            @Valid @ModelAttribute TransactionRequestUserIdDto transactionRequestUserIdDto,
             @PageableDefault Pageable pageable
     ) {
         return ResponseEntity
-                .ok(transactionService.getAllTransactions(pageable));
+                .ok(transactionService.getAllTransactions(transactionRequestUserIdDto, pageable));
     }
 
     @GetMapping("/filters")
     public ResponseEntity<Page<TransactionResponseDto>> getAllTransactionWithFilters(
 
-            TransactionFilterRequestDto transactionFilterRequestDTO,
+            @Valid @ModelAttribute TransactionFilterRequestDto transactionFilterRequestDTO,
             @PageableDefault Pageable pageable
     ) {
         return ResponseEntity
